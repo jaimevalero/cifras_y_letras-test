@@ -2,35 +2,41 @@
 import pprint
 import fnmatch
 import os
+import itertools
 import random
 import string
-import itertools
+from random import randint
 
+print "Inicio"
 NUMERO_LETRAS=9
-debug=True
-objetivo=100
-
 dict_resultados = {}
 
 my_list = []
 
+
+
 def load_palabras(full_list):
-    with open("/Users/jaimevalerodebernabe/git/cifras_y_letras/letras.txt") as f:
+    with open("/Users/jaimevalero/git/cifras_y_letras/letras.txt") as f:
         for line in f:
             key = line.split()
-            longitud = (len(str(line))-1)
+            longitud = (len(str(key)[2:-2]))
             if ((longitud < 4) or (longitud > 9)) :
                 a=0
                 #print " skip:", line, longitud
             else:
-                full_list[line] = longitud
+                full_list[str(key)[2:-2]] = longitud
                 #print line,longitud
-    full_list
+    return
 
 def generate_letters():
-
+    vocales = ['a','e','i','o','a','e','i','o','u']
     for i in range( NUMERO_LETRAS ):
-        my_list.append(random.choice(string.ascii_lowercase))
+        vocal_o_consonante = randint(1,10)
+        if (vocal_o_consonante > 7 ):
+            vocal = randint(0,8)
+            my_list.append(vocales[vocal])
+        else:
+            my_list.append(random.choice(string.ascii_lowercase))
 
     print "Letras:", my_list
     return my_list
@@ -38,31 +44,35 @@ def generate_letters():
 
 if __name__ == '__main__':
 
-    full_list = {}
+    letras_concursante = {}
+    max_longitud=0
+
+    letras_concursante = generate_letters()
+
+    full_list = resultados = {}
     load_palabras(full_list )
 
 
-    letras_concursante = {}
-    letras_concursante = generate_letters()
 
-    a='comer'
-    #print "Pepe", dict_resultados[a]
 
-    #codigos = itertools.permutations(letras_concursante,NUMERO_CIFRAS)
+    for i in range(9,3,-1):
+        if (max_longitud > 0) :
+            break
+        print "Buscando palabras de: " , i
+        codigos = itertools.permutations(letras_concursante,i)
+        x = list(itertools.islice(codigos,0,100000000,1))
 
-    #codigo=str(letras_concursante)
-    #print "Letras",letras_concursante
-#NUMERO_LETRAS
-    codigos = itertools.permutations(letras_concursante,6)
-    x = list(itertools.islice(codigos,0,100000000,1))
-    #exit
-    #for range (9:4)
-    for i in x:
-        if letras_concursante.has_key(''.join(i)):
-            print 'encontrado', ''.join(i)
+        mejor_resultado=0
+        for j in x:
+            candidato = ''.join(j)
+            #print "kk4", candidato, str(candidato)
+            #full_list[candidato] = 99
 
-        print ''.join(i)
-        #cifras_generate_stack(i,objetivo,dict_resultados)
+            if ( str(candidato) in full_list ) :
+                if ( resultados[(candidato)] != 1 ) :
+                    print 'encontrado', candidato
+                    resultados[(candidato)] = 1
+                    max_longitud=1
 
 
 
